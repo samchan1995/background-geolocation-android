@@ -41,6 +41,7 @@ import com.marianhello.logging.UncaughtExceptionLogger;
 import org.json.JSONException;
 import org.slf4j.event.Level;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -220,6 +221,7 @@ public class BackgroundGeolocationFacade {
         List<String> permissionsList = Arrays.asList(PERMISSIONS);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionsList = new ArrayList(permissionsList);
             permissionsList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         }
         permissionManager.checkPermissions(permissionsList, new PermissionManager.PermissionRequestListener() {
