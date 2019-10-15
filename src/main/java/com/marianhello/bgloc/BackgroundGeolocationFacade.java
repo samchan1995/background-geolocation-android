@@ -43,6 +43,7 @@ import org.slf4j.event.Level;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class BackgroundGeolocationFacade {
@@ -54,8 +55,7 @@ public class BackgroundGeolocationFacade {
 
     public static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION
     };
 
     private boolean mServiceBroadcastReceiverRegistered = false;
@@ -216,7 +216,13 @@ public class BackgroundGeolocationFacade {
         logger.debug("Starting service");
 
         PermissionManager permissionManager = PermissionManager.getInstance(getContext());
-        permissionManager.checkPermissions(Arrays.asList(PERMISSIONS), new PermissionManager.PermissionRequestListener() {
+
+        List<String> permissionsList = Arrays.asList(PERMISSIONS);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionsList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
+        permissionManager.checkPermissions(permissionsList, new PermissionManager.PermissionRequestListener() {
             @Override
             public void onPermissionGranted() {
                 logger.info("User granted requested permissions");
