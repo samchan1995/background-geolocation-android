@@ -18,9 +18,10 @@ def SUPPORT_TEST_VERSION = "1.0.2"
 def SUPPORTX_TEST_VERSION = "1.1.0"
 def RESOURCE_PREFIX = "mauron85_bgloc_"
 
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 ext {
     getApplicationId = { ->
-        def applicationId = "com.marianhello.app"
+        def applicationId = project.env.get("APP_ID")
         if (rootProject.hasProperty('applicationId')) {
             applicationId = rootProject.applicationId
         }
