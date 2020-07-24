@@ -21,7 +21,7 @@ def RESOURCE_PREFIX = "mauron85_bgloc_"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 ext {
     getApplicationId = { ->
-        def applicationId = project.env.get("APP_ID")
+        def applicationId = "com.doughnutbus.nanny"
         if (rootProject.hasProperty('applicationId')) {
             applicationId = rootProject.applicationId
         }
