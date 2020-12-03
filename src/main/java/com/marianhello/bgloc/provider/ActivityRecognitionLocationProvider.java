@@ -88,8 +88,10 @@ public class ActivityRecognitionLocationProvider extends AbstractLocationProvide
 
         if (lastActivity.getType() == DetectedActivity.STILL) {
             handleStationary(location);
-            stopTracking();
-            return;
+            if (mConfig.getStopOnStillActivity()) {
+                stopTracking();
+                return;
+            }
         }
 
         showDebugToast("acy:" + location.getAccuracy() + ",v:" + location.getSpeed());
@@ -147,14 +149,11 @@ public class ActivityRecognitionLocationProvider extends AbstractLocationProvide
         } else if (googleApiClient.isConnected()) {
             if (isWatchingActivity) { return; }
             startTracking();
-            if (mConfig.getStopOnStillActivity()) {
-                ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                        googleApiClient,
-                        mConfig.getActivitiesInterval(),
-                        detectedActivitiesPI
-                );
-                isWatchingActivity = true;
-            }
+            ActivityRecognition.getClient(mContext).requestActivityUpdates(
+                    mConfig.getActivitiesInterval(),
+                    detectedActivitiesPI
+            );
+            isWatchingActivity = true;
         } else {
             googleApiClient.connect();
         }
@@ -163,7 +162,7 @@ public class ActivityRecognitionLocationProvider extends AbstractLocationProvide
     private void detachRecorder() {
         if (isWatchingActivity) {
             logger.debug("Detaching recorder");
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(googleApiClient, detectedActivitiesPI);
+            ActivityRecognition.getClient(mContext).removeActivityUpdates(detectedActivitiesPI);
             isWatchingActivity = false;
         }
     }
